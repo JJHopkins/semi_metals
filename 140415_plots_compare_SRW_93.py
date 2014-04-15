@@ -10,21 +10,24 @@ from pylab import show
 #eiz_x = np.loadtxt('data/eiz_x_65.txt') # LDS in perpendicular direction
 #eiz_z = np.loadtxt('data/eiz_z_65.txt') # LDS in parallel direction
 #
-eiz_x = np.loadtxt('data/eiz_x_90.txt') # LDS in perpendicular direction
-eiz_z = np.loadtxt('data/eiz_z_90.txt') # LDS in parallel direction
-#eiz_z = np.loadtxt('data/eiz_z_npk_90.txt') # LDS in parallel direction
-#eiz_x[0] = 0.0
-#eiz_x[1] = 0.0
-#eiz_x[2] = 0.0
-#eiz_z[0] = 0.0
-#eiz_z[1] = 0.0
-#eiz_z[2] = 0.0
+#eiz_x = np.loadtxt('data/eiz_x_90.txt') # LDS in perpendicular direction
+#eiz_z = np.loadtxt('data/eiz_z_90.txt') # LDS in parallel direction
 
 #eiz_x = np.loadtxt('data/eiz_x_91.txt') # LDS in perpendicular direction
 #eiz_z = np.loadtxt('data/eiz_z_91.txt') # LDS in parallel direction
 #
-#eiz_x = np.loadtxt('data/eiz_x_93.txt') # LDS in perpendicular direction
-#eiz_z = np.loadtxt('data/eiz_z_93.txt') # LDS in parallel direction
+eiz_w = np.loadtxt('data/eiz_w.txt') # LDS of water, intervening medium
+
+eiz_x = np.loadtxt('data/eiz_x_93.txt') # LDS in perpendicular direction
+eiz_z = np.loadtxt('data/eiz_z_93.txt') # LDS in parallel direction
+#eiz_z = np.loadtxt('data/eiz_z_npk_93.txt') # LDS in parallel direction
+#eiz_w[:5] = 0.0
+#eiz_x[:5] = 0.0
+#eiz_x[1] = 0.0
+#eiz_x[2] = 0.0
+#eiz_z[:5] = 0.0
+#eiz_z[1] = 0.0
+#eiz_z[2] = 0.0
 #
 
 #filename1=sys.argv[1] # eiz_x
@@ -42,7 +45,7 @@ eiz_z = np.loadtxt('data/eiz_z_90.txt') # LDS in parallel direction
 #eiz_x = np.loadtxt(filename1) # LDS in perpendicular direction
 #eiz_z = np.loadtxt(filename2) # LDS in parallel direction
 ##
-eiz_w = np.loadtxt('data/eiz_w.txt') # LDS of water, intervening medium
+#eiz_w = np.loadtxt('data/eiz_w.txt') # LDS of water, intervening medium
 ##eiz_w[0] = 79.0
 
 # Constants
@@ -58,7 +61,7 @@ kbT = Temp * 1.3807e-23 # [J]
 ns = np.arange(0.,500.) 
 zs = ns * coeff         
 
-Ls = np.arange(1e-9,10e-9,1e-9)  # separation distance between 2 cyclinders
+Ls = np.arange(1e-9,500e-9,50e-9)  # separation distance between 2 cyclinders
 
 #Integration vars
 T  = np.linspace(0.,2.**17, 1.+2.**17)
@@ -119,14 +122,14 @@ for i,L in enumerate(Ls):
 
         A0[i,j] = delta[j]*delta[j]*p[i,j]*p[i,j]*p[i,j]*p[i,j]*Ft0
         A0[i,0] = (1./2) * delta[0]*delta[0]*Ft0_term0
-        #A0[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft0_term0
         
         A2[i,j] = delta[j]*delta[j]*p[i,j]*p[i,j]*p[i,j]*p[i,j]*Ft2
         A2[i,0] = (1./2) * delta[0]*delta[0]*Ft2_term0
-        #A2[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft2_term0
 
         #A0[A0>1e6]= np.nan #NOTE: remove me later
         #A2[A2>1e6]= np.nan #NOTE: remove me later
+    #A0[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft0_term0
+    #A2[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft2_term0
     sum_A0 = (kbT/(32.)) * np.sum(A0, axis = 1)
     sum_A2 = (kbT/(32.)) * np.sum(A2, axis = 1)
 pl.loglog(ns,(kbT/(32.)) * A0[0,:], 'b-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
@@ -139,16 +142,17 @@ pl.loglog(ns,(kbT/(32.)) * A2[2,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(
 pl.loglog(ns,(kbT/(32.)) * A2[3,:], 'y:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
 pl.legend(loc = 'best')
 #pl.title(r'65w65 Matsubara terms')
-pl.title(r'90w90 Matsubara terms')
+#pl.title(r'90w90 Matsubara terms')
 #pl.title(r'91w91 Matsubara terms')
-#pl.title(r'93w93 Matsubara terms')
+pl.title(r'93w93 Matsubara terms')
 #pl.title(r'290w290 Matsubara terms')
 pl.ylabel(r'$\mathcal{A}^{(0)}_{N}, \,\, \mathcal{A}^{(2)}_{N}$')
 pl.xlabel(r'$N$')
 #pl.savefig('plots/65_A_vs_n.pdf')
-pl.savefig('plots/90_A_vs_n.pdf')
+#pl.savefig('plots/90_A_vs_n.pdf')
 #pl.savefig('plots/91_A_vs_n.pdf')
-#pl.savefig('plots/93_A_vs_n.pdf')
+pl.savefig('plots/93_A_vs_n.eps')
+#pl.savefig('plots/93_npk_A_vs_n.pdf')
 #pl.savefig('plots/290_A_vs_n.pdf')
 pl.show()
 
@@ -161,17 +165,21 @@ print 'Contribution to A2 from n=0 term = ', (kbT/(12.*np.pi))*A2[:,0]
 #np.savetxt('data/A2_65_perpendicular_ret.txt',sum_A2)
 #np.savetxt('data/Lengths_65_perpendicular_ret.txt',Ls)
 #
-np.savetxt('data/A0_90_perpendicular_ret.txt',sum_A0)
-np.savetxt('data/A2_90_perpendicular_ret.txt',sum_A2)
-np.savetxt('data/Lengths_90_perpendicular_ret.txt',Ls)
+#np.savetxt('data/A0_90_perpendicular_ret.txt',sum_A0)
+#np.savetxt('data/A2_90_perpendicular_ret.txt',sum_A2)
+#np.savetxt('data/Lengths_90_perpendicular_ret.txt',Ls)
 #
 #np.savetxt('data/A0_91_perpendicular_ret.txt',sum_A0)
 #np.savetxt('data/A2_91_perpendicular_ret.txt',sum_A2)
 #np.savetxt('data/Lengths_91_perpendicular_ret.txt',Ls)
 #
-#np.savetxt('data/A0_93_perpendicular_ret.txt',sum_A0)
-#np.savetxt('data/A2_93_perpendicular_ret.txt',sum_A2)
-#np.savetxt('data/Lengths_93_perpendicular_ret.txt',Ls)
+np.savetxt('data/A0_93_perpendicular_ret.txt',sum_A0)
+np.savetxt('data/A2_93_perpendicular_ret.txt',sum_A2)
+np.savetxt('data/Lengths_93_perpendicular_ret.txt',Ls)
+#
+#np.savetxt('data/A0_93_npk_perpendicular_ret.txt',sum_A0)
+#np.savetxt('data/A2_93_npk_perpendicular_ret.txt',sum_A2)
+#np.savetxt('data/Lengths_93_npk_perpendicular_ret.txt',Ls)
 #
 #np.savetxt('data/A0_290_perpendicular_ret.txt',sum_A0)
 #np.savetxt('data/A2_290_perpendicular_ret.txt',sum_A2)
@@ -200,15 +208,17 @@ pl.ylabel(y_ax_per)
 pl.legend(loc = 'best')
 
 #pl.title(title('6','5','Log-log, perpendicular'))
-pl.title(title('9','0','perpendicular'))
+#pl.title(title('9','0','perpendicular'))
 #pl.title(title('9','1','perpendicular'))
-#pl.title(title('9','3','perpendicular'))
+#pl.title(title('9','3','(no first peak eps2_z) perpendicular'))
+pl.title(title('9','3','perpendicular'))
 #pl.title(title('29','0','perpendicular'))
 #
 #pl.savefig(svfig('65','65','perpendicular'))
-pl.savefig(svfig('90','90','perpendicular'))
+#pl.savefig(svfig('90','90','perpendicular'))
 #pl.savefig(svfig('91','91','perpendicular'))
-#pl.savefig(svfig('93','93','perpendicular'))
+pl.savefig(svfig('93','93','perpendicular'))
+#pl.savefig(svfig('93','93','npk_perpendicular'))
 #pl.savefig(svfig('290','290','perpendicular'))
 pl.show()
 
@@ -224,16 +234,19 @@ pl.grid(which = 'both')
 pl.tick_params(which = 'both',labelright = True)
 pl.legend(loc = 'best')
 #pl.title(title('6','5','Semi-log, perpendicular'))
-pl.title(title('9','0','Semi-log, perpendicular'))
+#pl.title(title('9','3','(no first peak eps2_z) Semi-log, perpendicular'))
+pl.title(title('9','3','Semi-log, perpendicular'))
 #pl.title(title('9','1','perpendicular'))
 #pl.title(title('9','3','perpendicular'))
 #pl.title(title('29','0','perpendicular'))
 #
 #pl.savefig(svfig('65','65','semilog_perpendicular'))
-pl.savefig(svfig('90','90','semilog_perpendicular'))
 #pl.savefig(svfig('91','91','perpendicular'))
-#pl.savefig(svfig('93','93','perpendicular'))
+#pl.savefig(svfig('93','93','npk_semilog_perpendicular'))
+pl.savefig(svfig('93','93','semilog_perpendicular'))
 #pl.savefig(svfig('290','290','perpendicular'))
 pl.show()
+
+
 
 

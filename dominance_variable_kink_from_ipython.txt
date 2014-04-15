@@ -1,0 +1,40 @@
+In [346]: pl.plot(ns, np.exp(-2.*p[0,:]), label= r'$e^{-2\times p(\ell=1nm)}$')
+Out[346]: [<matplotlib.lines.Line2D at 0x130dec90>]
+
+In [347]: pl.plot(ns, np.exp(-2.*p[1,:]), label= r'$e^{-2p(\ell=51nm)}$')
+Out[348]: [<matplotlib.lines.Line2D at 0x130f54d0>]
+
+In [349]: pl.xlabel('N')
+Out[349]: <matplotlib.text.Text at 0xead7c10>
+
+In [350]: pl.ylabel(r'$y = e^{-2p}$')
+Out[350]: <matplotlib.text.Text at 0xe67bed0>
+
+In [351]: pl.legend(loc = 'best')
+Out[351]: <matplotlib.legend.Legend at 0x130ca690>
+
+In [352]: pl.title('Dominance variable in exponential')
+Out[352]: <matplotlib.text.Text at 0x130dbed0>
+
+In [353]: pl.show()
+
+In [354]: pl.plot(ns, np.exp(-2.*p[0,:]), label= r'$e^{-2p(\ell=1nm)}$')
+Out[354]: [<matplotlib.lines.Line2D at 0x136c2c50>]
+
+In [355]: pl.plot(ns, np.exp(-2.*p[1,:]), label= r'$e^{-2p(\ell=51nm)}$')
+Out[355]: [<matplotlib.lines.Line2D at 0x136ca210>]
+
+In [356]: pl.title('Dominance variable in exponential')
+Out[356]: <matplotlib.text.Text at 0x136d1e90>
+
+In [357]: pl.legend(loc = 'best')
+Out[357]: <matplotlib.legend.Legend at 0x11392f90>
+
+In [358]: pl.ylabel(r'$y = e^{-2p}$')
+Out[358]: <matplotlib.text.Text at 0x130ece90>
+
+In [359]: pl.xlabel('N')
+Out[359]: <matplotlib.text.Text at 0x130e4cd0>
+
+In [360]: pl.show()
+
