@@ -151,7 +151,7 @@ pl.xlabel(r'$N$')
 #pl.savefig('plots/65_A_vs_n.pdf')
 #pl.savefig('plots/90_A_vs_n.pdf')
 #pl.savefig('plots/91_A_vs_n.pdf')
-pl.savefig('plots/93_A_vs_n.eps')
+pl.savefig('plots/93_A_vs_n.png')
 #pl.savefig('plots/93_npk_A_vs_n.pdf')
 #pl.savefig('plots/290_A_vs_n.pdf')
 pl.show()
@@ -198,7 +198,7 @@ def title(cnt1,cnt2,orientation):
 	return r'$\mathrm{[%s,%s]\,\,Hamaker\,coeff:\, %s \,in\,water,\,retarded}$'%(cnt1,cnt2,orientation)
 
 def svfig(cnt1,cnt2,orientation):
-	return 'plots/140322_%sw%s_HCs_%s_ret.eps'%(cnt1,cnt2,orientation)
+	return 'plots/140322_%sw%s_HCs_%s_ret.png'%(cnt1,cnt2,orientation)
 
 pl.figure()
 pl.loglog(1e9*Ls,1e21*sum_A0,      label=r'$\mathcal{A^{(0)}}(\ell=%1.1f nm)=%3.2f, \,\,\, \mathcal{A^{(0)}}(\ell=%1.1f nm)=%3.2f$'%(1e9*Ls[0],1e21*sum_A0[0],1e9*Ls[1],1e21*sum_A0[1]))
