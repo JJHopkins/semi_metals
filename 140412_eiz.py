@@ -38,11 +38,11 @@ import pyreport
 
 #$ First, input \varepsilon\prime\prime(i\omega) files from Dan:
 
-#eV_x,eps2_x = np.loadtxt('data/CNT6_5_xe2_solid_30.txt',unpack=True, usecols = [0,1])
-#eV_z,eps2_z = np.loadtxt('data/CNT6_5_ze2_solid_30.txt',unpack=True, usecols = [0,1])
+eV_x,eps2_x = np.loadtxt('data/CNT6_5_xe2_solid_30.txt',unpack=True, usecols = [0,1])
+eV_z,eps2_z = np.loadtxt('data/CNT6_5_ze2_solid_30.txt',unpack=True, usecols = [0,1])
 
-eV_x,eps2_x = np.loadtxt('data/CNT9_0_xe2_solid_30.txt',unpack=True, usecols = [0,1])
-eV_z,eps2_z = np.loadtxt('data/CNT9_0_ze2_solid_30.txt',unpack=True, usecols = [0,1])
+#eV_x,eps2_x = np.loadtxt('data/CNT9_0_xe2_solid_30.txt',unpack=True, usecols = [0,1])
+#eV_z,eps2_z = np.loadtxt('data/CNT9_0_ze2_solid_30.txt',unpack=True, usecols = [0,1])
 #eps2_z[:57] = 0.0 # removes first divergent peak in eps2_z, saves file with npk
 
 #eV_x,eps2_x = np.loadtxt('data/CNT9_1_xe2_solid_30.txt',unpack=True, usecols = [0,1])
@@ -89,10 +89,10 @@ for j in range(len(z)):
         integrand_w[p]=eV_w[p]*eps2_w[p] / (eV_w[p]**2 + z[j]**2)
     eiz_w[j] = 1 + (2./np.pi) * np.trapz(integrand_w,eV_w)    
 
-np.savetxt( "data/energies.txt", z    )
-np.savetxt( "data/eiz_x_90.txt", eiz_x)
+#np.savetxt( "data/energies.txt", z    )
+np.savetxt( "data/eiz_x_65.txt", eiz_x)
 #np.savetxt( "data/eiz_z_npk_90.txt", eiz_z)
-np.savetxt( "data/eiz_z_90.txt", eiz_z)
+np.savetxt( "data/eiz_z_65.txt", eiz_z)
 np.savetxt( "data/eiz_w.txt"   , eiz_w)
 #
 a =  Aiz(eiz_x,eiz_z,eiz_w)
@@ -107,7 +107,7 @@ pl.axis([0,500,0,10])
 pl.xlabel(r'$N$', size = 24)
 pl.ylabel(r'$\varepsilon(i\zeta)$', size = 24)
 #pl.legend()
-pl.title(r'$\rm{\varepsilon(i\xi)\, for\, [9,0]\, and\, water}$')
+#pl.title(r'$\rm{\varepsilon(i\xi)\, for\, [9,0]\, and\, water}$')
 #pl.title(r'[9,0] eiz (no first peak in eps2_z) and water eiz')
 
 ax_inset = fig.add_axes([0.53,0.50,0.36,0.36])
@@ -115,7 +115,7 @@ ax_inset.plot(n, a,'k-.', linewidth = 2)#,label=r'$a(i\xi_{N})$')
 pl.tick_params(labelsize = 'small')
 pl.xlabel(r'$N$', size = 14)
 pl.ylabel(r'$a(i\xi)$', size = 14)
-pl.savefig('plots/90w90_eiz.png')
+#pl.savefig('plots/90w90_eiz.png')
 #pl.savefig('plots/90w90_eiz_npk.eps')
 pl.show()
 
@@ -129,9 +129,9 @@ pl.xlabel(r'$\hbar\omega\,\,\,[eV]$', size = 24)
 pl.ylabel(r'$\varepsilon^{\prime\prime}(\omega)$', size = 24)
 pl.axis([0,40,0,30])
 pl.legend()
-pl.title(r'[9,0] eps2 and water eps2')
+#pl.title(r'[9,0] eps2 and water eps2')
 #pl.title(r'[9,0] eps2 (no first peak) and water eps2')
-pl.savefig('plots/90w90_eps2.png')
+#pl.savefig('plots/90w90_eps2.png')
 #pl.savefig('plots/90w90_npk_eps2.eps')
 show()
 

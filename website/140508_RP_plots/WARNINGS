@@ -1,0 +1,5 @@
+No implementation found for style `subfigure'
+No implementation found for style `rotating'
+No implementation found for style `graphicx'
+
+No number for "<B>Derivativeof<SPANCLASS="MATH">${calA}^{(0)}=sum{calA}_n^{(0)}$</SPAN>asafunctionofseparationforMatsubarasumston=500,300,and150.</B>FortypicalcalculationsofthistypeofCNT,sumsfromn=0ton=500aresufficienttocapturen-dependantbehaviorandareaccuratetoabout0.01percentofsumston=10,000.Iuseanupperlimitofn=500formycomputations,showninblue.Akneeoccursin<SPANCLASS="MATH"></SPAN>attheseparationvalueforwhich<SPANCLASS="MATH"></SPAN>0.However,someofmyothercalculationshaveindicatedtheexistanceoftwoinflectionpointsatlowvaluesof<SPANCLASS="MATH"></SPAN>and<SPANCLASS="MATH"></SPAN>in<SPANCLASS="MATH"></SPAN>aswellasin<SPANCLASS="MATH"></SPAN>.Itappearsthatsummingoverthen'shastheeffectofblurringthetwoinflectionpointsintooneinflectionpoint.Theplotshowsthederivativeof<SPANCLASS="MATH"></SPAN>withrespecttoseparationwithn=500(blue),n=300(green),andn=150(red)usedastheupperlimitoftheMatsubarasum.Whenhighervaluesofnareremovedfromthesum,theireffectofmergingthetwoinflectionpointsisalsoremoved,asseeningreeninred."
