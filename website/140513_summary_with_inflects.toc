@@ -1,0 +1,35 @@
+\contentsline {section}{\numberline {1}CNTs}{2}
+\contentsline {subsection}{\numberline {1.1}[6,5] Dielectric response spectrum, dispersion spectrum, and anisotropy measure}{2}
+\contentsline {section}{\numberline {2}[9,0] dielectric response spectrum, dispersion spectrum, and anisotropy measure}{3}
+\contentsline {section}{\numberline {3}[9,1] dielectric response spectrum, dispersion spectrum, and anisotropy measure}{3}
+\contentsline {section}{\numberline {4}[9,3] dielectric response spectrum, dispersion spectrum, and anisotropy measure}{4}
+\contentsline {section}{\numberline {5}[29,0] dielectric response spectrum, dispersion spectrum, and anisotropy measure}{5}
+\contentsline {section}{\numberline {6}Semi-conductor [6,5]}{6}
+\contentsline {subsection}{\numberline {6.1}[6,5] terms of Matsubara sum}{6}
+\contentsline {subsection}{\numberline {6.2}[6,5] Log-log plot of $\mathcal {A}^{(0)}$ and $\mathcal {A}^{(2)}$ }{7}
+\contentsline {subsection}{\numberline {6.3}[6,5] Semi-log plot of $\mathcal {A}^{(0)}$ and $\mathcal {A}^{(2)}$ }{9}
+\contentsline {section}{\numberline {7}Semi-conductor [9,1]}{9}
+\contentsline {subsection}{\numberline {7.1}[9,1] terms of Matsubara sum}{9}
+\contentsline {subsection}{\numberline {7.2}[9,1] Log-log plot of $\mathcal {A}^{(0)}$ and $\mathcal {A}^{(2)}$ }{10}
+\contentsline {subsection}{\numberline {7.3}[9,1] Semi-log plot of $\mathcal {A}^{(0)}$ and $\mathcal {A}^{(2)}$ }{11}
+\contentsline {section}{\numberline {8}First results for semi-metal [9,3]}{12}
+\contentsline {subsection}{\numberline {8.1}[9,3] terms of unmodified Matsubara sum }{12}
+\contentsline {subsection}{\numberline {8.2}[9,3] terms of modified Matsubara sum with $\mathcal {A}(n=0)=0$}{14}
+\contentsline {subsection}{\numberline {8.3}[9,3] Log-log plot of unmodified $\mathcal {A}$ }{15}
+\contentsline {subsection}{\numberline {8.4}[9,3] Log-log plot of modified $\mathcal {A}(n=0)=0$}{16}
+\contentsline {subsection}{\numberline {8.5}[9,3] Semi-log plot of unmodified $\mathcal {A}$ }{17}
+\contentsline {subsection}{\numberline {8.6}[9,3] Semi-log plot of modified $\mathcal {A}(n=0)=0$}{18}
+\contentsline {section}{\numberline {9}Semi-conductor [29,0]}{19}
+\contentsline {subsection}{\numberline {9.1}[29,0] terms of Matsubara sum}{19}
+\contentsline {subsection}{\numberline {9.2}[29,0] Log-log plot of $\mathcal {A}^{(0)}$ and $\mathcal {A}^{(2)}$ }{20}
+\contentsline {subsection}{\numberline {9.3}[29,0] Semi-log plot of $\mathcal {A}^{(0)}$ and $\mathcal {A}^{(2)}$ }{21}
+\contentsline {section}{\numberline {10}An example plot of knee: $\mathcal {A}^{(0)}$ for [9,3]}{22}
+\contentsline {section}{\numberline {11}Plots of how each Matsubara term contributes to $\mathcal {A}_{n}^{(0)}(\ell )$}{24}
+\contentsline {subsection}{\numberline {11.1}Plots for visualizing and comparing gradiants for different CNT's}{24}
+\contentsline {section}{\numberline {12}Fully Retarded}{24}
+\contentsline {subsection}{\numberline {12.1}$\mathcal {A}^{(0)}$ for [6,5], [9,1], and [29,0] in water}{24}
+\contentsline {subsection}{\numberline {12.2}Hamaker 2: $\mathcal {A}^{(2)}$ for [6,5], [9,1], and [29,0] in water }{26}
+\contentsline {subsection}{\numberline {12.3}Total Hamaker: $\mathcal {A} = \mathcal {A}^{(0)}$ + $\mathcal {A}^{(2)}$ for [6,5], [9,1], and [29,0] in water }{28}
+\contentsline {section}{\numberline {13}Table of published results}{29}
+\contentsline {section}{\numberline {14}Table of python results}{29}
+\contentsline {section}{\numberline {15}Table of Gecko Hamaker results}{30}

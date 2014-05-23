@@ -1,0 +1,15 @@
+\contentsline {section}{\numberline {1}CNT Semi-conductor [6,5]}{2}
+\contentsline {subsection}{\numberline {1.1}[6,5] Dielectric response spectrum, dispersion spectrum, and anisotropy measure}{2}
+\contentsline {subsection}{\numberline {1.2}[6,5] Dielectric contrast, anisotropy measure, and their derivatives}{2}
+\contentsline {subsection}{\numberline {1.3}[6,5] Fully retarded Hamaker Coefficients for Matsubara Sum }{3}
+\contentsline {subsection}{\numberline {1.4}[6,5] Terms of Matsubara sum and their derivatives with respect to $\ell $ and $n$}{5}
+\contentsline {section}{\numberline {2}Finite c effect: change in contributions to Matsubara sum of ${\cal A}^{(0)}$}{6}
+\contentsline {subsection}{\numberline {2.1}[6,5] as an example of power law knee in ${\cal A}^{(0)}$ and inflection points in $d {\cal A}^{(0)} / \it {d}\ell $}{6}
+\contentsline {subsection}{\numberline {2.2}Ratio of signal travel time to flucuation lifetime}{7}
+\contentsline {section}{\numberline {3}Comparison to Siber plots: in progress (the plots shown here need a correction to the n=0 terms)}{10}
+\contentsline {subsection}{\numberline {3.1}[6,5] semi-conductor: retarded and non-retarded free energies}{10}
+\contentsline {subsection}{\numberline {3.2}[9,3] semi-conductor: retarded and non-retarded free energies}{10}
+\contentsline {section}{\numberline {4}Tables}{10}
+\contentsline {subsection}{\numberline {4.1}Table of published results}{11}
+\contentsline {subsection}{\numberline {4.2}Table of python results}{11}
+\contentsline {subsection}{\numberline {4.3}Table of Gecko Hamaker results}{11}
