@@ -31,7 +31,7 @@ kbT = Temp * 1.3807e-23 # [J]
 ns = np.arange(0.,500.) 
 zs = ns * coeff         
 
-Ls = np.arange(1e-9,150e-9,1e-9)  # separation distance between 2 cyclinders
+Ls = np.arange(1e-9,100e-9,1e-9)  # separation distance between 2 cyclinders
 
 #Integration vars
 T  = np.linspace(0.,2.**17, 1.+2.**17)
@@ -43,6 +43,16 @@ def Aiz(perp, par,med):
 
 def Delta(par,med):
 	return (par - med)/med
+def Delta_perp(perp,med):
+	return (perp - med)/(perp+med)
+
+def DDDg2(perp1, perp2, par1,par2, med):
+    return (2./med)*((perp1-med)*(perp2-med)/(2.*med) -((perp1+med)*(par1-med)*(perp2-med)-(perp2+med)*(par2-med)*(perp1-med)+2.*med*(perp1-med)*(perp2-med))/((perp2+med)*(perp1+med)))
+
+def DDg2(perp1, perp2, par1,par2, med):
+    return (1./(med*med))*(par2-med)*(par1-med)*\
+            ((par1-med)/med-2.*(perp1-med)/(perp1+med))*\
+            ((par2-med)/med -2.*(perp2-med)/(perp2+med))
 
 def Pn(e,zn,l):
 	return np.sqrt(e)*zn*l*(1./c)
@@ -50,12 +60,26 @@ def Pn(e,zn,l):
 p = np.zeros(shape = (len(Ls),len(ns)))
 A0 = np.zeros(shape = (len(Ls),len(ns)))
 A2 = np.zeros(shape = (len(Ls),len(ns)))
+A2_org = np.zeros(shape = (len(Ls),len(ns)))
+A2_new = np.zeros(shape = (len(Ls),len(ns)))
 G = np.zeros(len(Ls))
+G_new = np.zeros(len(Ls))
 
 a_1 =   Aiz(eiz_x_051,eiz_z_051,eiz_w)
 a_2 =   Aiz(eiz_x_290,eiz_z_290,eiz_w)
 delta_1 = Delta(eiz_z_051,eiz_w)
 delta_2 = Delta(eiz_z_290,eiz_w)
+delta_prp1 = Delta_perp(eiz_x_051,eiz_w)
+delta_prp2 = Delta_perp(eiz_x_290,eiz_w)
+D   = delta_prp2*delta_1*(delta_1 - 2.*delta_prp1)*(delta_2-2.*delta_prp2)
+DD  = DDDg2(eiz_x_051,eiz_x_290,eiz_z_051,eiz_z_290,eiz_w)
+DDD = DDDg2(eiz_x_051,eiz_x_290,eiz_z_051,eiz_z_290,eiz_w)
+
+#pl.figure()
+#pl.plot(ns, D,  'b-o', label =r'$\Delta_{parallel}^{1}\Delta_{parallel}^{2}g^{(0)}\frac{1}{(t^2+2)^2}$')
+#pl.plot(ns, DD, 'g-x',label =r'$\Delta_{parallel}^{1}\Delta_{parallel}^{2}g^{(0)}\frac{1}{(t^2+2)^2}$')
+#pl.plot(ns, DDD,'r-|',label =r'$\Delta_{parallel}^{1}\Delta_{parallel}^{2}g^{(0)}\frac{1}{(t^2+2)^2}$')
+#pl.show()
 
 # Integrand, A0(n=0) and A2(n=0) terms 
 f0_term0 = U*U*U * np.exp(-2.* U)\
@@ -68,7 +92,7 @@ Ft0_term0 = romb(f0_term0)
 #Ft0_term0 = np.sum(f0_term0)
 Ft2_term0 = romb(f2_term0)
 #Ft2_term0 = np.sum(f2_term0)
-
+#pl.figure()
 # Calculate 1 \geq n \leq 500 terms
 for i,L in enumerate(Ls):
     print 'Computing A for separation number %3.0f of %3.0f'%(i, len(Ls))
@@ -85,10 +109,18 @@ for i,L in enumerate(Ls):
                 /(T*T+1.)\
                 *((T*T*T*T +4.*(T*T)+4.)*(1.-a_1[j])*(1.-a_2[j]))
                 #*((eiz_z[j]-eiz_w[j])/(eiz_z[j]-eiz_w[j]))\
+        f2_org = T*np.exp(-2.*p[i,j]*np.sqrt(T*T+1.))/(T*T+1.)*\
+                delta_1[j]*delta_2[j]\
+                *((T*T*T*T +4.*(T*T)+4.)*(1.-a_1[j])*(1.-a_2[j]))
+                #*((eiz_z[j]-eiz_w[j])/(eiz_z[j]-eiz_w[j]))\
+        f2_new =T*np.exp(-2.*p[i,j]*np.sqrt(T*T+1.))/(T*T+1.)*\
+                 DDDg2(eiz_x_051[j],eiz_x_290[j],eiz_z_051[j],eiz_z_290[j],eiz_w[j])*(T*T*T*T +4.*(T*T)+4.)
         #Ft0 = np.sum(f0)
         #Ft2 = np.sum(f2)
         Ft0 = romb(f0)
         Ft2 = romb(f2)
+        Ft2_org = romb(f2_org)
+        Ft2_new = romb(f2_new)
         #Ft = romb(f , axis = 1)
         #Fty =romb(Ft, axis = 0)
 
@@ -97,43 +129,224 @@ for i,L in enumerate(Ls):
         #A0[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft0_term0
         
         A2[i,j] = delta_1[j]*delta_2[j]*p[i,j]*p[i,j]*p[i,j]*p[i,j]*Ft2
+        A2_org[i,j] = p[i,j]*p[i,j]*p[i,j]*p[i,j]*Ft2_org
+        A2_new[i,j] = p[i,j]*p[i,j]*p[i,j]*p[i,j]*Ft2_new
+        A2_org[i,0] = (1./2) * delta_1[0]*delta_2[0]*Ft2_term0
+        A2_new[i,0] = (1./2) * delta_1[0]*delta_2[0]*Ft2_term0
         A2[i,0] = (1./2) * delta_1[0]*delta_2[0]*Ft2_term0
+        #A2_new[i,0] = (1./2) * delta_1[0]*delta_2[0]*Ft2_term0
         #A2[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft2_term0
 
-        #A0[A0>1e6]= np.nan #NOTE: remove me later
-        #A2[A2>1e6]= np.nan #NOTE: remove me later
+        #A0[A0>1e6]= np.nan #nOTE: remove me later
+        #A2[A2>1e6]= np.nan #nOTE: remove me later
     sum_A0 = (kbT/(32.)) * np.sum(A0, axis = 1)
     sum_A2 = (kbT/(32.)) * np.sum(A2, axis = 1)
+    sum_A2_org = (kbT/(32.)) * np.sum(A2_org, axis = 1)
+    sum_A2_new = (kbT/(32.)) * np.sum(A2_new, axis = 1)
     #G = (((5e-10)**4)/(L**4))*(sum_A0 + sum_A2)
     G = (-np.pi*r_1*r_1*np.pi*r_2*r_2)/(2.*np.pi*np.sin(theta)*L*L*L*L)*(sum_A0+sum_A2*np.cos(2.*theta))
+    G_org=(-np.pi*r_1*r_1*np.pi*r_2*r_2)/(2.*np.pi*np.sin(theta)*L*L*L*L)*(sum_A0+sum_A2_org*np.cos(2.*theta))
+    G_new=(-np.pi*r_1*r_1*np.pi*r_2*r_2)/(2.*np.pi*np.sin(theta)*L*L*L*L)*(sum_A0+sum_A2_new*np.cos(2.*theta))
+#    pl.plot(ns,A2_org[i,:],'-')
+#    pl.plot(ns,-A2_new[i,:],'--')
+#pl.show()
+np.savetxt('data/A0_51w290_perpendicular_ret.txt',sum_A0)
+np.savetxt('data/A2_51w290_perpendicular_ret.txt',sum_A2)
+np.savetxt('data/A0_51w290_n_l.txt',A0)
+np.savetxt('data/A2_51w290_n_l.txt', A2)
 
 pl.figure()
-pl.plot(1e9*Ls,1e21*G)
-pl.show
-#pl.figure()
-#pl.loglog(ns,(kbT/(32.)) * A0[0,:], 'b-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
-#pl.loglog(ns,(kbT/(32.)) * A0[1,:], 'g-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
-#pl.loglog(ns,(kbT/(32.)) * A0[2,:], 'r-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
-#pl.loglog(ns,(kbT/(32.)) * A0[3,:], 'y-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
-#pl.loglog(ns,(kbT/(32.)) * A2[0,:], 'b:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
-#pl.loglog(ns,(kbT/(32.)) * A2[1,:], 'g:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
-#pl.loglog(ns,(kbT/(32.)) * A2[2,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
-#pl.loglog(ns,(kbT/(32.)) * A2[3,:], 'y:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
-#pl.legend(loc = 'best')
-##pl.title(r'65w65 Matsubara terms')
-##pl.title(r'90w90 Matsubara terms')
-##pl.title(r'91w91 Matsubara terms')
-##pl.title(r'93w93 Matsubara terms')
-#pl.title(r'290w290 Matsubara terms')
-#pl.ylabel(r'$\mathcal{A}^{(0)}_{N}, \,\, \mathcal{A}^{(2)}_{N}$')
-#pl.xlabel(r'$N$')
-##pl.savefig('plots/65_A_vs_n.pdf')
-##pl.savefig('plots/90_A_vs_n.pdf')
-##pl.savefig('plots/91_A_vs_n.pdf')
-##pl.savefig('plots/93_A_vs_n.pdf')
-#pl.savefig('plots/51w290_A_vs_n.pdf')
-#pl.show()
+pl.plot(1e9*Ls,1e21*G,'b--')
+#pl.plot(1e9*Ls,1e21*G_org,'g:|')
+#pl.plot(1e9*Ls,1e21*G_new,'r:')
+#pl.plot(1e9*Ls,1e21*G_new)
+pl.show()
+
+pl.figure()
+pl.loglog(1e9*Ls,G/G[0],'b--')
+#pl.plot(1e9*Ls,G_org/G_org[0],'g:|')
+#pl.plot(1e9*Ls,G_new/G_new[0],'r:')
+#pl.plot(1e9*Ls,1e21*G_new)
+pl.show()
+
+pl.figure()
+pl.loglog(ns,(kbT/(32.)) * A2[0,:], 'b:', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+pl.loglog(ns,(kbT/(32.)) * A2[1,:], 'b:', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+pl.loglog(ns,(kbT/(32.)) * A2[2,:], 'b:', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+pl.loglog(ns,(kbT/(32.)) * A2[3,:], 'b:', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+
+#pl.loglog(ns,(kbT/(32.)) * A2_org[0,:], 'g--')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+#pl.loglog(ns,(kbT/(32.)) * A2_org[1,:], 'g--')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+#pl.loglog(ns,(kbT/(32.)) * A2_org[2,:], 'g--')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+#pl.loglog(ns,(kbT/(32.)) * A2_org[3,:], 'g--')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
 #
+#pl.loglog(ns,(kbT/(32.)) * A2_new[0,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+#pl.loglog(ns,(kbT/(32.)) * A2_new[1,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+#pl.loglog(ns,(kbT/(32.)) * A2_new[2,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+#pl.loglog(ns,(kbT/(32.)) * A2_new[3,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+#pl.legend(loc = 'best')
+#pl.title(r'65w65 Matsubara terms')
+#pl.title(r'90w90 Matsubara terms')
+#pl.title(r'91w91 Matsubara terms')
+#pl.title(r'93w93 Matsubara terms')
+pl.title(r'290w290 Matsubara terms')
+pl.ylabel(r'$\mathcal{A}^{(0)}_{n}, \,\, \mathcal{A}^{(2)}_{n}$')
+pl.xlabel(r'$n$')
+#pl.savefig('plots/65_A_vs_n.pdf')
+#pl.savefig('plots/90_A_vs_n.pdf')
+#pl.savefig('plots/91_A_vs_n.pdf')
+#pl.savefig('plots/93_A_vs_n.pdf')
+pl.savefig('plots/51w290_diff_delta2g2__A_vs_n.pdf')
+pl.show()
+#
+pl.figure()
+pl.plot(ns,(kbT/(32.)) * A2[0,:], 'b:', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+pl.plot(ns,(kbT/(32.)) * A2[1,:], 'b:', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+pl.plot(ns,(kbT/(32.)) * A2[2,:], 'b:', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+pl.plot(ns,(kbT/(32.)) * A2[3,:], 'b:', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+#pl.plot(ns,(kbT/(32.)) * A2_org[0,:], 'g--')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+#pl.plot(ns,(kbT/(32.)) * A2_org[1,:], 'g--')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+#pl.plot(ns,(kbT/(32.)) * A2_org[2,:], 'g--')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+#pl.plot(ns,(kbT/(32.)) * A2_org[3,:], 'g--')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+#pl.plot(ns,(kbT/(32.)) * A2_new[0,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+#pl.plot(ns,(kbT/(32.)) * A2_new[1,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+#pl.plot(ns,(kbT/(32.)) * A2_new[2,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+#pl.plot(ns,(kbT/(32.)) * A2_new[3,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+pl.legend(loc = 'best')
+#pl.title(r'65w65 Matsubara terms')
+#pl.title(r'90w90 Matsubara terms')
+#pl.title(r'91w91 Matsubara terms')
+#pl.title(r'93w93 Matsubara terms')
+pl.title(r'290w290 Matsubara terms')
+pl.ylabel(r'$\mathcal{A}^{(0)}_{n}, \,\, \mathcal{A}^{(2)}_{n}$')
+pl.xlabel(r'$n$')
+#pl.savefig('plots/65_A_vs_n.pdf')
+#pl.savefig('plots/90_A_vs_n.pdf')
+#pl.savefig('plots/91_A_vs_n.pdf')
+#pl.savefig('plots/93_A_vs_n.pdf')
+pl.savefig('plots/51w290_nonlog_compare_delta2g2__A_terms_vs_n.pdf')
+pl.show()
+#
+pl.figure()
+pl.plot(ns,(kbT/(32.)) * A0[0,:], 'b-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+pl.plot(ns,(kbT/(32.)) * A0[1,:], 'g-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+pl.plot(ns,(kbT/(32.)) * A0[2,:], 'r-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+pl.plot(ns,(kbT/(32.)) * A0[3,:], 'y-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+pl.plot(ns,(kbT/(32.)) * A2_org[0,:], 'b:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+pl.plot(ns,(kbT/(32.)) * A2_org[1,:], 'g:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+pl.plot(ns,(kbT/(32.)) * A2_org[2,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+pl.plot(ns,(kbT/(32.)) * A2_org[3,:], 'y:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+pl.legend(loc = 'best')
+#plplot.title(r'65w65 Matsubara terms')
+#plplot.title(r'90w90 Matsubara terms')
+#plplot.title(r'91w91 Matsubara terms')
+#pl.title(r'93w93 Matsubara terms')
+pl.title(r'290w290 Matsubara terms')
+pl.ylabel(r'$\mathcal{A}^{(0)}_{n}, \,\, \mathcal{A}^{(2)}_{n}$')
+pl.xlabel(r'$n$')
+#pl.savefig('plots/65_A_vs_n.pdf')
+#pl.savefig('plots/90_A_vs_n.pdf')
+#pl.savefig('plots/91_A_vs_n.pdf')
+#pl.savefig('plots/93_A_vs_n.pdf')
+pl.savefig('plots/51w290_nonlog_A_terms_vs_n.pdf')
+pl.show()
+
+pl.figure()
+pl.loglog(ns,(kbT/(32.)) * A0[0,:], 'b-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+pl.loglog(ns,(kbT/(32.)) * A0[1,:], 'g-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+pl.loglog(ns,(kbT/(32.)) * A0[2,:], 'r-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+pl.loglog(ns,(kbT/(32.)) * A0[3,:], 'y-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+pl.loglog(ns,(kbT/(32.)) * A2[0,:], 'b:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+pl.loglog(ns,(kbT/(32.)) * A2[1,:], 'g:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+pl.loglog(ns,(kbT/(32.)) * A2[2,:], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+pl.loglog(ns,(kbT/(32.)) * A2[3,:], 'y:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+pl.legend(loc = 'best')
+#pl.title(r'65w65 Matsubara terms')
+#pl.title(r'90w90 Matsubara terms')
+#pl.title(r'91w91 Matsubara terms')
+#pl.title(r'93w93 Matsubara terms')
+pl.title(r'290w290 Matsubara terms')
+pl.ylabel(r'$\mathcal{A}^{(0)}_{n}, \,\, \mathcal{A}^{(2)}_{n}$')
+pl.xlabel(r'$n$')
+#pl.savefig('plots/65_A_vs_n.pdf')
+#pl.savefig('plots/90_A_vs_n.pdf')
+#pl.savefig('plots/91_A_vs_n.pdf')
+#pl.savefig('plots/93_A_vs_n.pdf')
+pl.savefig('plots/51w290_A_vs_n.pdf')
+pl.show()
+#
+pl.figure()
+pl.loglog(ns,A0[0,:]/sum_A0[0], 'b-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+pl.loglog(ns,A0[1,:]/sum_A0[1], 'g-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+pl.loglog(ns,A0[2,:]/sum_A0[2], 'r-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+pl.loglog(ns,A0[3,:]/sum_A0[3], 'y-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+pl.loglog(ns,A2[0,:]/sum_A2[0], 'b:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+pl.loglog(ns,A2[1,:]/sum_A2[1], 'g:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[1]))
+pl.loglog(ns,A2[2,:]/sum_A2[2], 'r:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[2]))
+pl.loglog(ns,A2[3,:]/sum_A2[3], 'y:')#, label = r'$A^{2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+pl.legend(loc = 'best')
+#pl.title(r'65w65 Matsubara terms')
+#pl.title(r'90w90 Matsubara terms')
+#pl.title(r'91w91 Matsubara terms')
+#pl.title(r'93w93 Matsubara terms')
+pl.title(r'290w290 Matsubara terms')
+pl.ylabel(r'$\mathcal{A}^{(0)}_{n}, \,\, \mathcal{A}^{(2)}_{n}$')
+pl.xlabel(r'$n$')
+#pl.savefig('plots/65_A_vs_n.pdf')
+#pl.savefig('plots/90_A_vs_n.pdf')
+#pl.savefig('plots/91_A_vs_n.pdf')
+#pl.savefig('plots/93_A_vs_n.pdf')
+pl.savefig('plots/51w290_relative_A_vs_n.pdf')
+pl.show()
+
+pl.figure()
+pl.plot(ns,(A0[0,:]+A2[0,:])/(sum_A0[0]+sum_A2[0]), 'b-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+pl.plot(ns,(A0[3,:]+A2[3,:])/(sum_A0[3]+sum_A2[3]), 'g-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+pl.plot(ns,(A0[6,:]+A2[6,:])/(sum_A0[6]+sum_A2[6]), 'r-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[6]))
+pl.plot(ns,(A0[9,:]+A2[9,:])/(sum_A0[9]+sum_A2[9]), 'y-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[9]))
+pl.legend(loc = 'best')
+pl.title(r'290w290 Matsubara terms')
+pl.ylabel(r'$\mathcal{A}^{(0)}_{n}, \,\, \mathcal{A}^{(2)}_{n}$')
+pl.xlabel(r'$n$')
+pl.show()
+
+DA2_l = np.diff(A2, axis = 0)
+
+DA2_n = np.diff(A2, axis = 1)
+
+pl.figure()
+pl.semilogx(ns,DA2_l[0,:],  'b-' ,linewidth = 1.0,label = r'$\ell=%2.1f\,nm$'%(1e9*Ls[0]))
+pl.semilogx(ns,DA2_l[9,:],  'b--',linewidth = 1.0,label =r'$\ell=%2.1f\,nm$' %(1e9*Ls[9]))
+pl.semilogx(ns,DA2_l[24,:], 'b-.',linewidth = 1.0,label =r'$\ell=%2.1f\,nm$'%(1e9*Ls[24]))
+pl.semilogx(ns,DA2_l[49,:], 'b:' ,linewidth = 1.0,label =r'$\ell=%2.1f\,nm$'%(1e9*Ls[49]))
+pl.semilogx(ns,DA2_l[3,:]-DA2_l[3,:], 'k:')# , linewidth = 1.0, label = r'$\ell=%2.1f\,nm$'%(1e9*Ls[3]))
+pl.legend(loc = 'best')
+pl.title(r'dA2/dl contribution to Matsubara sum for [5,1] and [26,0]')
+pl.ylabel(r'$d\mathcal{A}^{(2)}_{n}/dl$')
+pl.xlabel(r'$n$')
+pl.show()
+
+pl.figure()
+pl.plot(ns,(A0[0,:]+A2[0,:]), 'b-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+pl.plot(ns,(A0[3,:]+A2[3,:]), 'g-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+pl.plot(ns,(A0[6,:]+A2[6,:]), 'r-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[6]))
+pl.plot(ns,(A0[9,:]+A2[9,:]), 'y-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[9]))
+pl.legend(loc = 'best')
+pl.title(r'290w290 Matsubara terms')
+pl.ylabel(r'$\mathcal{A}^{(0)}_{n}, \,\, \mathcal{A}^{(2)}_{n}$')
+pl.xlabel(r'$n$')
+pl.show()
+
+pl.figure()
+pl.loglog(ns,(A0[0,:]+A2[0,:])/(sum_A0[0]+sum_A2[0]), 'b-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
+pl.loglog(ns,(A0[3,:]+A2[3,:])/(sum_A0[3]+sum_A2[3]), 'g-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[3]))
+pl.loglog(ns,(A0[6,:]+A2[6,:])/(sum_A0[6]+sum_A2[6]), 'r-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[6]))
+pl.loglog(ns,(A0[9,:]+A2[9,:])/(sum_A0[9]+sum_A2[9]), 'y-', label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[9]))
+pl.legend(loc = 'best')
+pl.title(r'290w290 Matsubara terms')
+pl.ylabel(r'$\mathcal{A}^{(0)}_{n}, \,\, \mathcal{A}^{(2)}_{n}$')
+pl.xlabel(r'$n$')
+pl.show()
 #pl.figure()
 #pl.loglog(ns,(kbT/(32.)) * A0[ 0,:], 'b-',  label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[0]))
 #pl.loglog(ns,(kbT/(32.)) * A0[ 4,:], 'g-',  label = r'$A^{0,2}(\ell=%2.1f\,nm)$'%(1e9*Ls[4]))
@@ -330,3 +543,4 @@ pl.show
 #pl.show()
 #
 #
+
