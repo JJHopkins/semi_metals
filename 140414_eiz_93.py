@@ -6,7 +6,6 @@ import matplotlib.pyplot as pl
 # use pyreport -l file.py
 from pylab import show
 import pyreport
-
 #$  Jaime Hopkins HW2 prob 2
 #$  % Python code for Kramers-Kronig transform of
 #$ \varepsilon\prime\prime(i\omega)
@@ -48,17 +47,24 @@ import pyreport
 #eV_x,eps2_x = np.loadtxt('data/CNT9_1_xe2_solid_30.txt',unpack=True, usecols = [0,1])
 #eV_z,eps2_z = np.loadtxt('data/CNT9_1_ze2_solid_30.txt',unpack=True, usecols = [0,1])
 #
-eV_x,eps2_x = np.loadtxt('data/CNT9_3_xe2_solid_30.txt',unpack=True, usecols = [0,1])
-eV_z,eps2_z = np.loadtxt('data/CNT9_3_ze2_solid_30.txt',unpack=True, usecols = [0,1])
+#eV_x,eps2_x = np.loadtxt('data/CNT9_3_xe2_solid_30.txt',unpack=True, usecols = [0,1])
+#eV_z,eps2_z = np.loadtxt('data/CNT9_3_ze2_solid_30.txt',unpack=True, usecols = [0,1])
 #eps2_z[:120] = 0.0 # removes first divergent peak in eps2_z, saves file with npk
 #
 #eV_x,eps2_x = np.loadtxt('data/CNT29_0_xe2_solid_30.txt',unpack=True, usecols = [0,1])
 #eV_z,eps2_z = np.loadtxt('data/CNT29_0_ze2_solid_30.txt',unpack=True, usecols = [0,1])
 
-eV_w,eps2_w = np.loadtxt('data/water-L.txt',unpack=True, usecols = [0,1])
+eV_x,eps2_x = np.loadtxt('data/CNT24_24_xe2_solid_30.txt',unpack=True, usecols = [0,1])
+eV_z,eps2_z = np.loadtxt('data/CNT24_24_ze2_solid_30.txt',unpack=True, usecols = [0,1])
+#
+#eV_w,eps2_w = np.loadtxt('data/water-L.txt',unpack=True, usecols = [0,1])
 
 #$ Make a list of Matsubara energies as integer multiples of N
 #$ \xi_{N}^(RT) = (2 \pi k_{B} T / hbar)N = coeff*N
+
+eV_w, eps2_w  = np.loadtxt('data/water_fine_DD_140708.txt', unpack=True, usecols = [0,1])
+#x    ,        y = np.loadtxt('data/water_finer_DD_140708.txt', unpack=True,usecols =[0,1]) # this is the LDS
+
 coeff = 0.159      # [eV] 
 T = 300.0          # Room temp
 n = np.arange(0,500) 
@@ -90,11 +96,17 @@ for j in range(len(z)):
         integrand_w[p]=eV_w[p]*eps2_w[p] / (eV_w[p]**2 + z[j]**2)
     eiz_w[j] = 1 + (2./np.pi) * np.trapz(integrand_w,eV_w)    
 
-np.savetxt( "data/energies.txt", z    )
-np.savetxt( "data/eiz_x_93.txt", eiz_x)
+#np.savetxt( "data/energies.txt", z    )
+#np.savetxt( "data/eiz_x_24.txt", eiz_x)
 #np.savetxt( "data/eiz_z_npk_93.txt", eiz_z)
-np.savetxt( "data/eiz_z_93.txt", eiz_z)
-np.savetxt( "data/eiz_w.txt"   , eiz_w)
+#np.savetxt( "data/eiz_z_24.txt", eiz_z)
+np.savetxt( "data/eiz_w_DD.txt"   , eiz_w)
+#
+##np.savetxt( "data/energies.txt", z    )
+#np.savetxt( "data/eiz_x_93.txt", eiz_x)
+##np.savetxt( "data/eiz_z_npk_93.txt", eiz_z)
+#np.savetxt( "data/eiz_z_93.txt", eiz_z)
+#np.savetxt( "data/eiz_w.txt"   , eiz_w)
 #
 a =  Aiz(eiz_x,eiz_z,eiz_w)
 #

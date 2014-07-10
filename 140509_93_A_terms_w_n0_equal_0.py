@@ -51,7 +51,7 @@ kbT = Temp * 1.3807e-23  # [J]
 ns = np.arange(0.,500.) 
 zs = ns * coeff         
 
-Ls = np.arange(1e-9,450e-9,1e-9)  # separation distance between 2 cyclinders
+Ls = np.arange(1e-9,150e-9,1e-9)  # separation distance between 2 cyclinders
 
 #Integration vars
 T  = np.linspace(0.,2.**17, 1.+2.**17)
@@ -110,12 +110,12 @@ for i,L in enumerate(Ls):
         #Fty =romb(Ft, axis = 0)
 
         A0[i,j] = delta[j]*delta[j]*p[i,j]*p[i,j]*p[i,j]*p[i,j]*Ft0
-        #A0[i,0] = (1./2) * delta[0]*delta[0]*Ft0_term0
-        A0[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft0_term0
+        A0[i,0] = (1./2) * delta[0]*delta[0]*Ft0_term0
+        #A0[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft0_term0
         
         A2[i,j] = delta[j]*delta[j]*p[i,j]*p[i,j]*p[i,j]*p[i,j]*Ft2
-        #A2[i,0] = (1./2) * delta[0]*delta[0]*Ft2_term0
-        A2[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft2_term0
+        A2[i,0] = (1./2) * delta[0]*delta[0]*Ft2_term0
+        #A2[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft2_term0
     sum_A0 = (kbT/(32.)) * np.sum(A0, axis = 1)
     sum_A2 = (kbT/(32.)) * np.sum(A2, axis = 1)
 #    print 1e9*Ls[i],1e21*(kbT/32)*A0[i,0]
@@ -130,11 +130,21 @@ for i,L in enumerate(Ls):
 #np.savetxt(  'data/A0_93_sum.txt',sum_A0)
 #np.savetxt(  'data/A2_93_sum.txt',sum_A2)
 
-np.savetxt('data/A0_n0_equal_0_93.txt',A0)
-np.savetxt('data/A2_n0_equal_0_93.txt',A2)
-np.savetxt('data/Ls_n0_equal_0_93.txt',Ls)
-np.savetxt(  'data/A0_n0_equal_0_93_sum.txt',sum_A0)
-np.savetxt(  'data/A2_n0_equal_0_93_sum.txt',sum_A2)
+np.savetxt('data/A0_nonscreen_n_93.txt',A0)
+np.savetxt('data/A2_nonscreen_n_93.txt',A2)
+np.savetxt(  'data/A0_nonscreen_93_sum.txt',sum_A0)
+np.savetxt(  'data/A2_nonscreen_93_sum.txt',sum_A2)
+
+#np.savetxt('data/A0_screen_n_93.txt',A0)
+#np.savetxt('data/A2_screen_n_93.txt',A2)
+#np.savetxt(  'data/A0_screen_93_sum.txt',sum_A0)
+#np.savetxt(  'data/A2_screen_93_sum.txt',sum_A2)
+
+#np.savetxt('data/A0_n0_equal_0_93.txt',A0)
+#np.savetxt('data/A2_n0_equal_0_93.txt',A2)
+#np.savetxt('data/Ls_n0_equal_0_93.txt',Ls)
+#np.savetxt(  'data/A0_n0_equal_0_93_sum.txt',sum_A0)
+#np.savetxt(  'data/A2_n0_equal_0_93_sum.txt',sum_A2)
 
 #pl.figure()
 #pl.plot(Ls,(kbT/32)*A0[:,  0], 'b:' , label = r'$A^{(0)}(n=%2.1f)$'%(ns[  0]))
