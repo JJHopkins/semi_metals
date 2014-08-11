@@ -11,6 +11,7 @@ eiz_x = np.loadtxt('data/eiz_x_24.txt') # LDS in perpendicular direction
 eiz_z = np.loadtxt('data/eiz_z_24.txt') # LDS in parallel direction
 
 eiz_w = np.loadtxt('data/eiz_w.txt') # LDS of water, intervening medium
+#eiz_w = np.loadtxt('data/140730_eiz_w.txt') # LDS of water, intervening medium
 
 #eiz_x = np.loadtxt('data/eiz_x_93.txt') # LDS in perpendicular direction
 #eiz_z = np.loadtxt('data/eiz_z_93.txt') # LDS in parallel direction

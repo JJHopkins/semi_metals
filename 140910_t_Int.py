@@ -69,7 +69,7 @@ p = np.linspace(0.,10.,100)#Pn(eiz_w[j],zs[j],L)
 t  = np.linspace(0.,20.,200)#, 1.+2.**17)
 P,T = np.meshgrid(p,t, indexing = 'ij')
 f = (T/(T**2+P**2))*np.exp(-2.*np.sqrt(T**2+P**2))*(T**2+2.*P**2)**2
-F = romb(f)
+F = trapz(f)
 print F
 
 pl.figure()

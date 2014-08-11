@@ -7,9 +7,14 @@ import matplotlib.pyplot as pl
 from pylab import show
 
 # Input dielectric response data
-eiz_x = np.loadtxt('data/eiz_x_93.txt') # LDS in perpendicular direction
-eiz_z = np.loadtxt('data/eiz_z_93.txt') # LDS in parallel direction
+eiz_x = np.loadtxt('data/eiz_x_24.txt') # LDS in perpendicular direction
+eiz_z = np.loadtxt('data/eiz_z_24.txt') # LDS in parallel direction
+#eiz_X = np.loadtxt('data/eiz_x_93.txt') # LDS in perpendicular direction
+#eiz_Z = np.loadtxt('data/eiz_z_93.txt') # LDS in parallel direction
+#eiz_x = eiz_X[:500]
+#eiz_z = eiz_Z[:500]
 #
+eiz_w = np.loadtxt('data/140730_eiz_w.txt') # LDS of water, intervening medium
 #eiz_x = np.loadtxt('data/eiz_x_90.txt') # LDS in perpendicular direction
 #eiz_z = np.loadtxt('data/eiz_z_90.txt') # LDS in parallel direction
 #
@@ -35,9 +40,9 @@ eiz_z = np.loadtxt('data/eiz_z_93.txt') # LDS in parallel direction
 #eiz_x = np.loadtxt(filename1) # LDS in perpendicular direction
 #eiz_z = np.loadtxt(filename2) # LDS in parallel direction
 ##
-eiz_w = np.loadtxt('data/eiz_w.txt') # LDS of water, intervening medium
+#eiz_w = np.loadtxt('data/eiz_w.txt') # LDS of water, intervening medium
 ##eiz_w[0] = 79.0
-
+#eiz_w = np.ones(len(eiz_x))
 # Constants
 c = 2.99e8               # [m/s]
 coeff = 2.411e14         # [rad/s]
@@ -51,7 +56,7 @@ kbT = Temp * 1.3807e-23  # [J]
 ns = np.arange(0.,500.) 
 zs = ns * coeff         
 
-Ls = np.arange(1e-9,150e-9,1e-9)  # separation distance between 2 cyclinders
+Ls = np.arange(3e-9,7e-9,1e-9)  # separation distance between 2 cyclinders
 
 #Integration vars
 T  = np.linspace(0.,2.**17, 1.+2.**17)
@@ -110,19 +115,20 @@ for i,L in enumerate(Ls):
         #Fty =romb(Ft, axis = 0)
 
         A0[i,j] = delta[j]*delta[j]*p[i,j]*p[i,j]*p[i,j]*p[i,j]*Ft0
-        A0[i,0] = (1./2) * delta[0]*delta[0]*Ft0_term0
-        #A0[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft0_term0
+        #A0[i,0] = (1./2) * delta[0]*delta[0]*Ft0_term0
+        A0[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft0_term0
         
         A2[i,j] = delta[j]*delta[j]*p[i,j]*p[i,j]*p[i,j]*p[i,j]*Ft2
-        A2[i,0] = (1./2) * delta[0]*delta[0]*Ft2_term0
-        #A2[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft2_term0
+        #A2[i,0] = (1./2) * delta[0]*delta[0]*Ft2_term0
+        A2[i,0] = 0.#(1./2) * delta[0]*delta[0]*Ft2_term0
     sum_A0 = (kbT/(32.)) * np.sum(A0, axis = 1)
     sum_A2 = (kbT/(32.)) * np.sum(A2, axis = 1)
 #    print 1e9*Ls[i],1e21*(kbT/32)*A0[i,0]
 #    print 1e9*Ls[i],1e21*(kbT/32)*A2[i,0]
 #    print '-------------------'
-#print sum_A0[0] 
-#print sum_A2[0]
+print len(zs)
+print 'sum_A0[2] = ',sum_A0[2] 
+print 'sum_A2[2] = ',sum_A2[2]
 #print '******************'
 #np.savetxt('data/A0_n_93.txt',A0)
 #np.savetxt('data/A2_n_93.txt',A2)
@@ -130,10 +136,33 @@ for i,L in enumerate(Ls):
 #np.savetxt(  'data/A0_93_sum.txt',sum_A0)
 #np.savetxt(  'data/A2_93_sum.txt',sum_A2)
 
-np.savetxt('data/A0_nonscreen_n_93.txt',A0)
-np.savetxt('data/A2_nonscreen_n_93.txt',A2)
-np.savetxt(  'data/A0_nonscreen_93_sum.txt',sum_A0)
-np.savetxt(  'data/A2_nonscreen_93_sum.txt',sum_A2)
+
+
+#24w24 screened
+#A0 = 5.85087481783e-21
+#A2 = 4.45276877535e-24
+#24w24 UNscreened
+#A0 = 8.12394122428e-21
+#A2 = 2.34783917133e-23
+#93w93 screened
+#A0 = 7.92167901166e-20
+#A2 = 3.12595843295e-21
+#93w93 UNscreened
+#A0 = 8.04439964424e-20
+#A2 = 3.28300993162e-21
+
+
+
+
+
+
+#np.savetxt(  'data/A0_250.txt',sum_A0)
+#np.savetxt(  'data/A2_250.txt',sum_A2)
+
+#np.savetxt('data/A0_nonscreen_n_93.txt',A0)
+#np.savetxt('data/A2_nonscreen_n_93.txt',A2)
+#np.savetxt(  'data/A0_nonscreen_93_sum.txt',sum_A0)
+#np.savetxt(  'data/A2_nonscreen_93_sum.txt',sum_A2)
 
 #np.savetxt('data/A0_screen_n_93.txt',A0)
 #np.savetxt('data/A2_screen_n_93.txt',A2)
@@ -349,7 +378,7 @@ pl.legend(loc = 'best')
 #pl.savefig(svfig('65','65','perpendicular'))
 ##pl.savefig(svfig('90','90','perpendicular'))
 ##pl.savefig(svfig('91','91','perpendicular'))
-pl.savefig(svfig('93','93','n0_equal_0_perpendicular'))
+#pl.savefig(svfig('93','93','n0_equal_0_perpendicular'))
 ##pl.savefig(svfig('290','290','perpendicular'))
 pl.show()
 #
@@ -374,7 +403,7 @@ pl.legend(loc = 'best')
 #pl.savefig(svfig('65','65','semilog_perpendicular'))
 ##pl.savefig(svfig('90','90','perpendicular'))
 ##pl.savefig(svfig('91','91','perpendicular'))
-pl.savefig(svfig('93','93','n0_equal_0_perpendicular'))
+#pl.savefig(svfig('93','93','n0_equal_0_perpendicular'))
 ##pl.savefig(svfig('290','290','perpendicular'))
 pl.show()
 #
